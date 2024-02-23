@@ -1,0 +1,57 @@
+const { app, BrowserWindow, ipcMain } = require('electron')
+
+let win;
+
+const createWindow = async () => {
+    win = new BrowserWindow({
+    width: 550,
+    height: 520,
+    frame: false,
+    titleBarStyle: 'hidden',
+    webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+        enableRemoteModule: true,
+      }
+    })
+    await win.loadFile('index.html')
+    await win.webContents.executeJavaScript(`require('./preloading.js');`);
+    try {
+      setTimeout(async () => {
+        try {
+          await win.loadFile('main.html');
+          await win.webContents.executeJavaScript(`require('./preloading.js');`);
+          win.setSize(800, 600); 
+        } catch (error) {
+          console.error('[SecretBlox] - Failed to load main.html:', error);
+        }
+      }, 5000);
+    } catch (error) {
+      console.error('[SecretBlox] - Failed to execute preloading script:', error);
+    }
+
+    ipcMain.on('minimizeApp', () => {
+      win.minimize();
+    });
+
+
+    ipcMain.on('closeApp', () => {
+      win.close();
+    });
+}
+
+app.whenReady().then(createWindow).catch(error => console.error('[SecretBlox] - Failed to create window:', error));
+
+app.on('activate', async () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      try {
+        await createWindow();
+      } catch (error) {
+        console.error('[SecretBlox] - Failed to recreate window on activate:', error);
+      }
+    }
+})
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
+});

@@ -1,0 +1,14 @@
+{
+  "name": "secret-blox-loader",
+  "version": "1.0.0",
+  "description": "Secret blox loader",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Nano",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^29.0.1"
+  }
+}
