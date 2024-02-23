@@ -1,5 +1,5 @@
 
-- Made with Electron
+- Made with Electron V3 (Exit scam)
 
 INSTALL:
   - npm install
