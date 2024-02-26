@@ -11,17 +11,19 @@ const createWindow = async () => {
     webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
+        sandbox: false,
+        worldSafeExecuteJavaScript: true,
         enableRemoteModule: true,
       }
     })
-    await win.loadFile('index.html')
+    win.loadURL(`file://${__dirname}/index.html`);
     await win.webContents.executeJavaScript(`require('./preloading.js');`);
     try {
       setTimeout(async () => {
         try {
           await win.loadFile('main.html');
           await win.webContents.executeJavaScript(`require('./preloading.js');`);
-          win.setSize(800, 600); 
+          win.setSize(1200, 620); 
         } catch (error) {
           console.error('[SecretBlox] - Failed to load main.html:', error);
         }
