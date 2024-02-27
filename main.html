@@ -15,33 +15,53 @@
       <button id="close-btn">x</button>
     </div>
   <div class="side-panel">
-    <div class="generation-prompt" style="-webkit-app-region: drag;">
+    <div class="logo" style="-webkit-app-region: drag;">
       <p style="text-align: center; font-size: 20px;">secret <span id="blox" style="color: rgb(223, 33, 33);">blox</span></p>
     </div>
+
     <div class="directory">
+      <p id="directory-title"></p>
       <ul class="file-list">
       </ul>
     </div>
 
     
   </div>
+
+
+  <div class="top-bar" style="margin-left: 50px; position: absolute; top: 5px; left: 200px; display: flex;">
+    <div class="dropdown">
+      <button class="dropbtn">File</button>
+      <div class="dropdown-content">
+        <a id="OpenFile">Open File</a>
+        <a href="#">Open Folder</a>
+        
+      </div>
+    </div>
+    <div class="dropdown">
+      <button class="dropbtn">Edit</button>
+      <div class="dropdown-content">
+        <a href="#">Undo</a>
+        <a href="#">Redo</a>
+        
+      </div>
+    </div>
+  </div>
+  
   <style>
 
   .monaco-editor.vs,
   .monaco-editor.vs .monaco-editor-background {
-    background-color: transparent;
+    background-color: transparent;  
   }
   </style>
   <div style="display: flex; justify-content: center; align-items: flex-end; margin-left: auto;">
     <div id="container" style="width: 950px; height: 490px; margin-top: 36px; margin-left: 40px; text-align: left;"></div>
     <div style="position: absolute; bottom: 5px; right: 5px;">
-      <button id="button1" style="background-color: #0f0f12; color: white; font-size: 16px; padding: 8px 16px; border: none; cursor: pointer; margin-right: 10px; border-radius: 5px; width: 100px;">Execute</button>
-      <button id="button2" style="background-color: #0f0f12; color: white; font-size: 16px; padding: 8px 16px; border: none; cursor: pointer; border-radius: 5px; width: 100px;">Inject</button>
-    </div>
-
-    <div style="position: absolute; bottom: 5px; left: 10px;">
-      <button id="button1" style="background-color: #0f0f12; color: white; font-size: 16px; padding: 8px 16px; border: none; cursor: pointer; margin-right: 10px; border-radius: 5px; width: 100px;">Open</button>
-      <button id="button2" style="background-color: #0f0f12; color: white; font-size: 16px; padding: 8px 16px; border: none; cursor: pointer; border-radius: 5px; width: 100px;">Save</button>
+      <button class="buttons" id="Clear">Clear</button>
+      <button class="buttons" id="Execute" style="background-color: #0c0c0ee5; color: white; font-size: 13px; padding: 8px 13px; border: none; cursor: pointer; margin-right: 3px; border-radius: 6px; width: 100px;">Execute</button>
+      <button class="buttons" id="Inject" style="background-color: #0c0c0ee5; color: white; font-size: 13px; padding: 8px 13px; border: none; cursor: pointer; margin-right: 3px; border-radius: 6px; width: 100px;">Inject</button>
+      
     </div>
   </div>
   <script>
@@ -70,20 +90,15 @@
           base: 'vs-dark',
           inherit: true,
           rules: [       
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.emphasis', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.underline', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.underline', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.underline', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.underline', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic', fontStyle: 'bold italic underline line-through' },
-            { token: 'list.strong.italic.strikeout.underline.list.strong.italic.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.strikeout.strikeout.underline.list.strong.italic.underline', fontStyle: 'bold italic underline line-through' },
-            { background: '#0f0f12' },
-            { foreground: 'FFFFFF' }
+            { token: 'function', foreground: '#ff6666' }, 
+            { token: 'keyword', foreground: '#6666ff' }, 
+            { token: 'number', foreground: '#ffb366' }, 
+            { token: 'comment', foreground: '#808080' }, 
+            { token: 'print', foreground: '#ff6666' }, 
+            { token: 'string', foreground: '#ffb366' }, 
+            { token: 'io', foreground: '#66ff66' },
+            { token: 'print', foreground: '#ff6666' }, 
+            { token: 'fact', foreground: '#ff6666' }, 
           ],
           colors: {
             'editor.foreground': '#FFFFFF',
@@ -91,7 +106,7 @@
           }
         });
 				var editor = monaco.editor.create(document.getElementById('container'), {
-					value: 'print("lol")',
+					value: 'print("SecretBlox")',
 					language: 'lua',
           theme: 'myCoolTheme',
           suggestOnTriggerCharacters: true,
@@ -106,6 +121,7 @@
 				});
 			});
 		})();
+
 	</script>
 
 

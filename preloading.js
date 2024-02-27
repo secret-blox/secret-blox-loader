@@ -1,6 +1,8 @@
 const fs = require('fs').promises;
 const path = require('path');
 const { ipcRenderer } = require('electron');
+const { dialog } = require('electron');
+
 
 async function createDirectory(directoryPath) {
     try {
@@ -16,61 +18,89 @@ createDirectory(workspaceDir);
 
 const processedFiles = new Set();
 
+let openFilePath = '';
+
 const checkWorkspaceDir = async () => {
   try {
     const workspaceFiles = await fs.readdir(workspaceDir);
-    workspaceFiles.forEach(async (file) => {
-      if (!processedFiles.has(file)) {
-        processedFiles.add(file);
+    const sortedFiles = workspaceFiles.sort((a, b) => a.localeCompare(b));
 
-        const fileName = file;
-        const isDirectory = await fs.stat(path.join(workspaceDir, file)).then(stats => stats.isDirectory()).catch(() => false);
-        const fileElement = document.createElement('p');
-        const folderIcon = document.createElement('img');
-        folderIcon.classList.add('icon'); 
-        if (isDirectory) {
-          folderIcon.setAttribute('src', 'imgs/folder.png');
-          folderIcon.setAttribute('alt', 'Folder Icon');
-          fileElement.appendChild(folderIcon);
-        } else {
-          let openFilePath = '';
-          fileElement.addEventListener('click', async () => {
-            const fileName = fileElement.textContent;
-            const openFilePath = path.join(workspaceDir, fileName);
-            const fileContent = await fs.readFile(openFilePath, 'utf-8');
-            const editor = monaco.editor.getModels()[0];
-            editor.setValue(fileContent);
-          });
+    for (const file of sortedFiles) {
+        if (!processedFiles.has(file)) {
+            processedFiles.add(file);
 
-          folderIcon.setAttribute('src', 'imgs/file.png');
-          folderIcon.setAttribute('alt', 'File Icon');
-          fileElement.appendChild(folderIcon);
+            const fileName = file;
+            const fileStats = await fs.stat(path.join(workspaceDir, file));
+            const isDirectory = fileStats.isDirectory();
+            const fileElement = document.createElement('p');
+            const folderIcon = document.createElement('img');
+            folderIcon.classList.add('icon');
+            const fileExt = path.extname(file);
+            const iconPath = fileExt === '.lua' ? 'imgs/lua.png' : 'imgs/code.png';
+            folderIcon.setAttribute('src', isDirectory ? 'imgs/folder.png' : iconPath);
+            folderIcon.setAttribute('alt', isDirectory ? 'Folder Icon' : 'File Icon');
+            fileElement.appendChild(folderIcon);
+
+            if (!isDirectory) {
+                fileElement.addEventListener('click', async () => {
+                    const fileName = fileElement.textContent;
+                    openFilePath = path.join(workspaceDir, fileName);
+                    const fileContent = await fs.readFile(openFilePath, 'utf-8');
+                    const editor = monaco.editor.getModels()[0];
+                    editor.setValue(fileContent);
+                    const activeElements = document.querySelectorAll('.file-list .active');
+                    activeElements.forEach(element => {
+                        element.classList.remove('active');
+                    });
+                    fileElement.classList.add('active');
+                });
+            }
+
+            const fileNameElement = document.createElement('span');
+            fileNameElement.textContent = fileName;
+            fileElement.appendChild(fileNameElement);
+            document.querySelector('.file-list').appendChild(fileElement);
         }
-        const fileNameElement = document.createElement('span');
-        fileNameElement.textContent = fileName;
-        fileElement.appendChild(fileNameElement);
-        document.querySelector('.file-list').appendChild(fileElement);
-      }
-    });
+    }
   } catch (error) {
-    console.error(`[SecretBlox] - Failed to read directory at ${workspaceDir}: ${error}`);
+      console.error(`[SecretBlox] - Failed to read directory at ${workspaceDir}: ${error}`);
   }
 };
 
+const currentDir = path.basename(workspaceDir);
+const directoryTitleElement = document.getElementById('directory-title');
+if (directoryTitleElement) {
+    directoryTitleElement.textContent = currentDir;
+}
 
+
+
+document.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.key === 'z') {
+    const editor = monaco.editor.getModels()[0];
+    editor.trigger('keyboard', 'undo', null);
+  }
+});
+
+
+const clearButton = document.getElementById('Clear');
+if (clearButton) {
+    clearButton.addEventListener('click', () => {
+        const editor = monaco.editor.getModels()[0];
+        editor.setValue('');
+    });
+}
 // help
 document.addEventListener('keydown', (event) => {
   if (event.ctrlKey && event.key === 's') {
     const fileName = document.querySelector('.file-list').textContent;
-    const openFilePath = path.join(workspaceDir, fileName);
     const editor = monaco.editor.getModels()[0];
-    fs.writeFile(openFilePath, editor.getValue())
-      .then(() => console.log(`File ${fileName} saved successfully`))
-      .catch((error) => console.error(`Failed to save file ${fileName}: ${error}`));
+    fs.writeFile(openFilePath, editor.getValue()) 
+      .then(() => console.log(`[SecretBlox] - Saved`))
+      .catch((error) => console.error(`[SecretBlox] - Failed to save file`));
   }
 });
-
-setInterval(checkWorkspaceDir, 1000);
+setInterval(checkWorkspaceDir, 200);
 
 const apiDir = path.join(__dirname, 'api');
 createDirectory(apiDir);
