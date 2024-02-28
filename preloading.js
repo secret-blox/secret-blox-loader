@@ -151,6 +151,38 @@ document.getElementById('minimize-btn').addEventListener('click', () => {
   ipcRenderer.send('minimizeApp');
 });
 
+const WebSocket = require('ws');
+const secretbloxSocket = new WebSocket.Server({ port: 8080 });
+
+secretbloxSocket.on('connection', function connection(ws) {
+  console.log('[SecretBlox] - Roblox Client Connected.');
+
+  ws.on('message', function incoming(message) {
+    console.log(`[SecretBlox] - Received message: ${message}`);
+  });
+
+  ws.on('close', function close() {
+    console.log('[SecretBlox] - Roblox client disconnected.');
+  });
+
+  ws.send('Welcome to SecretBlox!', {encoding: 'utf8'});
+
+  document.getElementById('Execute').addEventListener('click', () => {
+    const editorContent = monaco.editor.getModels()[0].getValue();
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(editorContent, {encoding: 'utf8'});
+
+      console.log('[SecretBlox] - Executed ws:localhost:8080');
+    } else {
+      console.log('[SecretBlox] - Roblox Client is not connected.');
+    }
+  });
+});
+
+
+
+
+
 document.getElementById('close-btn').addEventListener('click', () => {
   ipcRenderer.send('closeApp');
 });

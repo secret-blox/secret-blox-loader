@@ -14,9 +14,9 @@ const createWindow = async () => {
         sandbox: false,
         worldSafeExecuteJavaScript: true,
         enableRemoteModule: true,
-         
-        backgroundColor: '#FFF', 
-        transparent: true, 
+            // Adding rounded corners
+        backgroundColor: '#FFF', // Ensure the background color is set to work with transparency
+        transparent: true, // Enable transparency
       },
     
     })

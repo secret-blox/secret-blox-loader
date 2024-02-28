@@ -183,17 +183,19 @@ body {
 
 
   .file-list .active {
-    background: rgba(100, 149, 237, 0.2); /* Lighter shade of blue for better visibility */
+    background: rgba(100, 149, 237, 0.2);
     color: #FFFFFF;
-    padding: 3px; 
-    border-left: 3px solid rgb(223, 33, 33); 
-    margin: 2px 0; /* Add slight margin for spacing between items */
+    padding: 2px 0px; 
+    border-left: 3px solid rgb(223, 33, 33);
+    margin: 2px 0;
+    width: 100%; 
+    display: block; 
   }
 
 
   .file-list p:hover {
     background: rgba(255, 255, 255, 0.1);
-    padding: 3px;
+    padding: 2px;
     transition: background-color 0.3s ease;
   }
 

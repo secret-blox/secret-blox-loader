@@ -150,7 +150,7 @@
         const operatorPattern = /[+\-*/%^#=<>]/;
         const delimiterPattern = /[()\[\]{};]/;
         const whitespacePattern = /\s+/;
-        const variablePattern = /(?<=\blocal\s+)[a-zA-Z_]\w*/; 
+        const variablePattern = /(?<=\blocal\s+)[a-zA-Z_]\w*/; // Updated pattern to match variable names following 'local' keyword
 
         monaco.languages.setMonarchTokensProvider('lua', {
           tokenizer: {
@@ -174,7 +174,7 @@
               [identifierPattern, 'identifier'],
 
               // Variables (highlighted as gray)
-              [variablePattern, 'string'], 
+              [variablePattern, 'string'], // Use a custom theme color for 'variable'
 
               // Operators and punctuation
               [operatorPattern, 'operator'],
