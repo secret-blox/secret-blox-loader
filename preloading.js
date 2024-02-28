@@ -24,6 +24,8 @@ const checkWorkspaceDir = async () => {
   try {
     const workspaceFiles = await fs.readdir(workspaceDir);
     const sortedFiles = workspaceFiles.sort((a, b) => a.localeCompare(b));
+    const directories = [];
+    const files = [];
 
     for (const file of sortedFiles) {
         if (!processedFiles.has(file)) {
@@ -59,9 +61,19 @@ const checkWorkspaceDir = async () => {
             const fileNameElement = document.createElement('span');
             fileNameElement.textContent = fileName;
             fileElement.appendChild(fileNameElement);
-            document.querySelector('.file-list').appendChild(fileElement);
+
+            if (isDirectory) {
+                directories.push(fileElement);
+            } else {
+                files.push(fileElement);
+            }
         }
     }
+
+    
+    directories.forEach(directory => document.querySelector('.file-list').appendChild(directory));
+    files.forEach(file => document.querySelector('.file-list').appendChild(file));
+
   } catch (error) {
       console.error(`[SecretBlox] - Failed to read directory at ${workspaceDir}: ${error}`);
   }
@@ -101,6 +113,36 @@ document.addEventListener('keydown', (event) => {
   }
 });
 setInterval(checkWorkspaceDir, 200);
+
+async function readAndUpdateFile() {
+  const state = { lastModifyTime: null }; 
+
+  setInterval(async () => {
+      if (openFilePath) {
+          try {
+              const fileStats = await fs.stat(openFilePath);
+              const fileModifyTime = fileStats.mtime;
+
+              if (!state.lastModifyTime || state.lastModifyTime.getTime() < fileModifyTime.getTime()) {
+                  const data = await fs.readFile(openFilePath, 'utf-8');
+                  
+                  const editor = monaco.editor.getModels()[0];
+                  const editorValue = editor.getValue();
+                  if (editorValue !== data) {
+                      editor.setValue(data);
+                  }
+                  console.log(data);
+                  console.log("[SecretBlox] - Live updated");
+                  state.lastModifyTime = fileModifyTime; 
+              }
+          } catch (err) {
+              console.error(`[SecretBlox] - Failed to read live update file: ${err.message}`);
+          }
+      }
+  }, 200);
+}
+
+readAndUpdateFile();
 
 const apiDir = path.join(__dirname, 'api');
 createDirectory(apiDir);

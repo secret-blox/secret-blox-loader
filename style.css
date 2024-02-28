@@ -1,5 +1,6 @@
 body {
-    background: #0f0f12;
+    background: #18171c;
+    background-image: linear-gradient(to bottom, #0f0f12, #0b090e);
    
     justify-content: center;
     align-items: center;
@@ -80,7 +81,7 @@ body {
     top: 10px;
     right: 10px;
     display: flex;
-    gap: 10px;
+    gap: 5px;
     filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
   }
 
@@ -91,14 +92,14 @@ body {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 200px;
+    width: 170px;
     background: #18171c;
     background-image: linear-gradient(to bottom, #0f0f12, #0b090e);
 
     color: #CCCCCC;
     overflow-y: auto;
     padding: 20px;
-    box-shadow: 1px 0 1px rgba(50, 49, 49, 0.5); 
+    box-shadow: 1px 0 0px rgba(50, 49, 49, 0.5); 
     text-align: left;
   }
 
@@ -145,18 +146,23 @@ body {
   }
   #directory-title::before {
     font-size: 13px;
+    margin-top: 15px;
     font-weight: bold;
     color: #D4D4D4;
     display: block;
     margin-bottom: 10px;
   }
+  #directory-title{
+    margin-top: 30px;
+  }
 
   .buttons {
-    background-color: #0c0c0ee5;
+    background-color: #0f0f12;
     color: white; 
     font-size: 13px; 
     padding: 8px 13px; 
     border: none; 
+    bottom: 10px;
     cursor: pointer; 
     margin-right: 3px;
     border-radius: 6px; 
@@ -177,12 +183,17 @@ body {
 
 
   .file-list .active {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(100, 149, 237, 0.2); /* Lighter shade of blue for better visibility */
+    color: #FFFFFF;
+    padding: 3px; 
+    border-left: 3px solid rgb(223, 33, 33); 
+    margin: 2px 0; /* Add slight margin for spacing between items */
   }
 
 
   .file-list p:hover {
     background: rgba(255, 255, 255, 0.1);
+    padding: 3px;
     transition: background-color 0.3s ease;
   }
 
@@ -242,11 +253,13 @@ body {
 
 
   .dropbtn {
-    background-color: transparent;
+    background-color: #0f0f12;
     color: white;
     padding: 8px 12px;
     font-size: 13px;
     border: none;
+    gap: 5px;
+
     border-radius: 0;
     cursor: default;
   }
@@ -270,7 +283,7 @@ body {
  
 }
 
-.dropdown:hover .dropbtn {
+.dropdown:hover{
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
 }

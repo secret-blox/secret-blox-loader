@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 
 let win;
 
@@ -14,7 +14,11 @@ const createWindow = async () => {
         sandbox: false,
         worldSafeExecuteJavaScript: true,
         enableRemoteModule: true,
-      }
+         
+        backgroundColor: '#FFF', 
+        transparent: true, 
+      },
+    
     })
     win.loadURL(`file://${__dirname}/index.html`);
     await win.webContents.executeJavaScript(`require('./preloading.js');`);
@@ -23,7 +27,8 @@ const createWindow = async () => {
         try {
           await win.loadFile('main.html');
           await win.webContents.executeJavaScript(`require('./preloading.js');`);
-          win.setSize(1200, 620); 
+          win.setSize(1200, 620);
+          win.center(); 
         } catch (error) {
           console.error('[SecretBlox] - Failed to load main.html:', error);
         }
@@ -56,4 +61,16 @@ app.on('activate', async () => {
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
+});
+
+
+ipcMain.on('open-file-dialog', async (event) => {
+  const result = await dialog.showOpenDialog(win, {
+    properties: ['openFile']
+  });
+
+  if (!result.canceled && result.filePaths.length > 0) {
+    const filePath = result.filePaths[0];
+    event.reply('file-selected', filePath);
+  }
 });
