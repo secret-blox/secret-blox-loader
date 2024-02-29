@@ -152,7 +152,14 @@ document.getElementById('minimize-btn').addEventListener('click', () => {
 });
 
 const WebSocket = require('ws');
-const secretbloxSocket = new WebSocket.Server({ port: 8080 });
+const secretbloxSocket = new WebSocket.Server({ port: 49152 });
+
+const WSOpCode = {
+  WS_NOP: 77,
+  WS_EXEC: 78,
+  WS_SETFPS: 79,
+  WS_MSG: 80
+}
 
 secretbloxSocket.on('connection', function connection(ws) {
   console.log('[SecretBlox] - Roblox Client Connected.');
@@ -165,14 +172,16 @@ secretbloxSocket.on('connection', function connection(ws) {
     console.log('[SecretBlox] - Roblox client disconnected.');
   });
 
-  ws.send('Welcome to SecretBlox!', {encoding: 'utf8'});
+  ws.send(String.fromCharCode(WSOpCode.WS_MSG) + 'Welcome to SecretBlox!', {encoding: 'utf8'});
 
   document.getElementById('Execute').addEventListener('click', () => {
     const editorContent = monaco.editor.getModels()[0].getValue();
     if (ws.readyState === WebSocket.OPEN) {
-      ws.send(editorContent, {encoding: 'utf8'});
+      // first byte is the opcode WS_EXEC
+      let msg = String.fromCharCode(WSOpCode.WS_EXEC) + editorContent;
+      ws.send(msg, {encoding: 'utf8'});
 
-      console.log('[SecretBlox] - Executed ws:localhost:8080');
+      console.log('[SecretBlox] - Executed ws:localhost:49152');
     } else {
       console.log('[SecretBlox] - Roblox Client is not connected.');
     }
