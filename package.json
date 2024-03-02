@@ -12,8 +12,12 @@
     "electron": "^29.0.1"
   },
   "dependencies": {
+    "discord-rpc": "^4.0.1",
+    "electron-notification": "^1.0.0",
+    "electron-notification-state": "^1.0.4",
     "fs": "^0.0.1-security",
     "monaco-editor": "^0.46.0",
+    "notyf": "^3.10.0",
     "ws": "^8.16.0"
   }
 }

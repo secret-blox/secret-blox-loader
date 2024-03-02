@@ -3,6 +3,8 @@
   <head>
     <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     
@@ -34,16 +36,15 @@
       <button class="dropbtn">File</button>
       <div class="dropdown-content">
         <a id="OpenFile">Open File</a>
-        <a href="#">Open Folder</a>
+        <a id="OpenFolder">Open Folder</a>
         
       </div>
     </div>
     <div class="dropdown">
       <button class="dropbtn">Edit</button>
       <div class="dropdown-content">
-        <a href="#">Undo</a>
-        <a href="#">Redo</a>
-        
+        <a id="Undo">Undo</a>
+        <a id="Redo">Redo</a>
       </div>
     </div>
   </div>
@@ -67,6 +68,8 @@
   <script>
     const { ipcRenderer } = require('electron');
     const fs = require('fs').promises;
+   
+
     document.getElementById('OpenFile').addEventListener('click', () => {
       ipcRenderer.send('open-file-dialog');
     });

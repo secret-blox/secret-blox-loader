@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 
 let win;
 
+
 const createWindow = async () => {
     win = new BrowserWindow({
     width: 550,
@@ -62,6 +63,18 @@ app.on('activate', async () => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
+
+ipcMain.on('open-folder-dialog', async (event) => {
+  const result = await dialog.showOpenDialog(win, {
+    properties: ['openDirectory']
+  });
+
+  if (!result.canceled && result.filePaths.length > 0) {
+    const folderPath = result.filePaths[0];
+    event.reply('folder-selected', folderPath);
+  }
+});
+
 
 
 ipcMain.on('open-file-dialog', async (event) => {
