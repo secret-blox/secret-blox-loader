@@ -200,9 +200,11 @@ class EditorManager {
                     { token: 'keyword', foreground: '#ff6666' },
                     { token: 'number', foreground: '#ffb366' },
                     { token: 'comment', foreground: '#808080' },
+                    { token: 'print', foreground: '#ff6666' },
                     { token: 'string', foreground: '#A9A9A9' },
                     { token: 'io', foreground: '#ccffcc' },
                     { token: 'print', foreground: '#ffcccc' },
+                    { token: 'fact', foreground: '#ffcccc' },
                     { token: 'boolean', foreground: '#cceeff' },
                     { token: 'table', foreground: '#ffddcc' },
                     { token: 'operator', foreground: '#ffb3cc' },
@@ -219,6 +221,9 @@ class EditorManager {
                     { token: 'in', foreground: '#ffcccc' },
                     { token: 'game', foreground: '#ffb366'},
                     { token: 'workspace', foreground: '#ffb366'},
+                    { token: 'Torso', foreground: '#ffb366'},
+
+                    { token: 'lightblue', foreground: '#3a9fbf'}
                 ],
                 colors: {
                     'editor.foreground': '#FFFFFF',
@@ -261,7 +266,7 @@ class EditorManager {
                   [identifierPattern, 'identifier'],
     
                   // Variables (highlighted as gray)
-                  [variablePattern, 'string'], // Use a custom theme color for 'variable'
+                  [variablePattern, 'string'], 
     
                   // Operators and punctuation
                   [operatorPattern, 'operator'],
