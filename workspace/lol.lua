@@ -1,1 +1,0 @@
-print("funny copy.lua")
