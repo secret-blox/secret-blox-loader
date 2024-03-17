@@ -2,7 +2,6 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config();
 
 const createWindow = async () => {
     win = new BrowserWindow({
