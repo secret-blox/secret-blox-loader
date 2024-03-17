@@ -751,10 +751,15 @@ class Misc {
                     closeIcon.setAttribute('src', '../assets/actions/remove.svg');
                     const closeButton = closeIcon.parentNode;
                     const clonedCloseButton = closeButton.cloneNode(true);
-
+    
+                    clonedCloseButton.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        EditorManager.deleteTab(fileName);
+                    });
+    
                     const clonedCloseIcon = clonedCloseButton.querySelector('img');
                     clonedCloseIcon.setAttribute('src', '../assets/actions/remove.svg');
-
+    
                     closeButton.parentNode.replaceChild(clonedCloseButton, closeButton);
                 }
             } else {
