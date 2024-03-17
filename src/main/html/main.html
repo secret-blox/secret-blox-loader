@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="../css/main.css">
+        <title>Secret blox</title>
+    </head>
+    <body>
+        <div class="main-container">
+            <div class="drag"></div>
+            <div class="top-panel">
+                <div class="quick-actions">
+                    <img src="../../../icon.ico">
+                    <button>File</button>
+                    <button>Edit</button>
+                    <button>Selection</button>
+                    <button>View</button>
+                </div>
+                <div class="window-controls">
+                    <button id="minimize">─</button>
+                    <button id="close">✖</button>
+                </div>
+            </div>
+
+            <div class="panels-container">
+                <div class="left-panel">
+                    <div class="resize-handle"></div>
+                    <div class="top-left">
+                        <div class="left-content">
+                            <h2>Explorer</h2><img src="../assets/arrows/down.svg">
+                        </div>
+                        <img src="../assets/explorer/dots.svg" id="dots">
+                    </div>
+                    <div id="filesContainer"></div>
+                </div>
+    
+                <div class="right-panel">
+                    <div class="tabs-container">
+                    </div>
+                    <div class="actions">
+                        <div class="executor-buttons">
+                            <button><img src="../assets/actions/execute.svg">Execute</button>
+                            <button><img src="../assets/actions/trash.svg">Clear</button>
+                            <button><img src="../assets/actions/open.svg">Open File</button>
+                            <button><img src="../assets/actions/save.svg">Save File</button>
+                        </div>
+                        <div class="status">
+                            <button id="inject" class="injection"><img src="../assets/actions/attach.svg"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="../js/main.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.js"></script>
+    </body>
+</html>
