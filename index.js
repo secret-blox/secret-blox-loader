@@ -1,3 +1,4 @@
+const { spawn } = require('child_process');
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -201,7 +202,13 @@ ipcMain.handle('open-file', async (event) => {
 });
 
 ipcMain.handle('inject', () => {
-    // inject
+    const isPackaged = require('electron-is-packaged').isPackaged;
+    const secretKey = "YOUR_SECRET_KEY";
+    if (isPackaged) {
+        spawn(path.join(app.getPath('exe'), '..', '..', '..', 'bin', 'SecretBloxInjector.exe'), [secretKey])
+    } else {
+        spawn(path.join(__dirname, 'bin', 'SecretBloxInjector.exe'), [secretKey])
+    }
 })
 
 app.disableHardwareAcceleration(false);
