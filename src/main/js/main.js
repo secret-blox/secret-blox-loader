@@ -1,4 +1,4 @@
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, dialog } = require("electron");
 const path = require('path');
 const fs = require('fs');
 
@@ -607,6 +607,17 @@ if (clearButton) {
     clearButton.addEventListener('click', () => {
         const editor = EditorManager.activeTab;
         editor.setValue('');
+    });
+}
+
+const openFileButton = document.getElementById('OpenFile');
+if (openFileButton) {
+    openFileButton.addEventListener('click', async () => {
+        const fileResults = await ipcRenderer.invoke('open-file-dialog');
+
+        if (fileResults.canceled == false) {
+            EditorManager.activeTab.setValue(fileResults.content);
+        }
     });
 }
 

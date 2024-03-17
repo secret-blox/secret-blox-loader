@@ -142,6 +142,20 @@ ipcMain.handle('check-and-rename-file', async (event, { oldPath, newPath }) => {
     }
 });
 
+ipcMain.handle('open-file-dialog', async (event) => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [{ name: 'Scripts', extensions: ['txt', 'lua'] }]
+    });
+  
+    if (canceled || filePaths.length === 0) {
+      return { canceled: true };
+    }
+  
+    const content = fs.readFileSync(filePaths[0], 'utf-8')
+    return { canceled: false, content: content };
+  });
+
 async function recursiveSearch(dir, fileName) {
     const files = await fs.promises.readdir(dir, { withFileTypes: true })
 
@@ -157,6 +171,7 @@ async function recursiveSearch(dir, fileName) {
     }
     return null;
 }
+
 
 
 app.whenReady().then(createWindow).catch(error => console.error('[SecretBlox] - Failed to create window:', error));
