@@ -113,6 +113,7 @@ class FileManager {
 
 class EditorManager {
     static editors = {};
+    static activeTab = null;
 
     static uriFromPath(_path) {
         let pathName = path.resolve(_path).replace(/\\/g, '/');
@@ -466,6 +467,7 @@ class EditorManager {
         Object.keys(this.editors).forEach(path => {
             const { editor, tab, editorContainer } = this.editors[path];
             if (path === file) {
+                this.activeTab = editor.getModel();
                 editorContainer.style.display = 'block';
                 tab.classList.add('active');
                 tab.style.backgroundColor = '#18181d';
@@ -586,7 +588,7 @@ secretbloxSocket.on('connection', function connection(ws) {
 
   document.getElementById('Execute').addEventListener('click', () => {
     
-    const editorContent = monaco.editor.getModels()[0].getValue();
+    const editorContent = EditorManager.activeTab.getValue();
     if (ws.readyState === WebSocket.OPEN) {
  
       let msg = String.fromCharCode(WSOpCode.WS_EXEC) + editorContent;
@@ -603,7 +605,7 @@ secretbloxSocket.on('connection', function connection(ws) {
 const clearButton = document.getElementById('Clear');
 if (clearButton) {
     clearButton.addEventListener('click', () => {
-        const editor = monaco.editor.getModels()[0];
+        const editor = EditorManager.activeTab;
         editor.setValue('');
     });
 }
