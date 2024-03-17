@@ -26,6 +26,45 @@ body {
     color: rgb(223, 33, 33);
 }
 
+#secret-key-input {
+    display: none;
+    background-color: #55555549;
+    color: #dfd4d4; 
+    border: none;
+    border-radius: 3px;
+    text-align: center;
+}
+
+#secret-key-input:focus {
+    outline: none;
+}
+
+#secret-key-input:active {
+    border: none;
+    box-shadow: none;
+}
+
+#submit-secret-key {
+    display: none;
+    width: 100px;
+    height: 20px;
+    background-color: #55555549;
+    color: #dfd4d4; 
+    border: none;
+    border-radius: 3px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#submit-secret-key:active {
+    border: none;
+    box-shadow: none;
+}
+
+#submit-secret-key:hover {
+    background-color: #3f3f3f49;
+}
+
 .loading-dots {
     display: flex;
     justify-content: center;

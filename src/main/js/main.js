@@ -914,7 +914,13 @@ secretbloxSocket.on('connection', function connection(ws) {
   
 
 injectButton.addEventListener('click', async () => {
-    await ipcRenderer.invoke('inject');
+    const secretKey = await ipcRenderer.invoke('fetch-secret-key');
+    if (secretKey == '') {
+        Notification.play('No secret key!', 'Please create file secretKey.txt and enter your key there!');
+        return;
+    }
+
+    await ipcRenderer.invoke('inject', secretKey);
 })
 
 document.addEventListener('keydown', function(event) {

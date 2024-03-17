@@ -2,41 +2,27 @@ const { spawn } = require('child_process');
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const isPackaged = require('electron-is-packaged').isPackaged;
+
+let win;
 
 const createWindow = async () => {
     win = new BrowserWindow({
-    width: 250,
-    height: 250,
-    frame: false,
-    resizable: false,
-    icon: 'icon.ico',
-    titleBarStyle: 'hidden',
-    webPreferences: {
-        worldSafeExecuteJavaScript: true,
-        enableRemoteModule: true,
-        transparent: true,
-        contextIsolation: false, // leave as false becuase we need to run in the same javascript context
-        nodeIntegration: true, 
-    },
-    
+        width: 250,
+        height: 250,
+        frame: false,
+        resizable: false,
+        icon: 'icon.ico',
+        titleBarStyle: 'hidden',
+        webPreferences: {
+            worldSafeExecuteJavaScript: true,
+            enableRemoteModule: true,
+            transparent: true,
+            contextIsolation: false, // leave as false becuase we need to run in the same javascript context
+            nodeIntegration: true, 
+        },  
     })
     win.loadURL(`file://${__dirname}/src/main/html/index.html`);
-    try {
-      setTimeout(async () => {
-            try {
-                await win.loadFile('src/main/html/main.html');
-                win.setSize(900, 400);
-                
-                // win.webContents.openDevTools()
-                
-                win.center();
-            } catch (error) {
-                console.error('[SecretBlox] - Failed to load main.html:', error);
-            }
-        }, 1000);
-    } catch (error) {
-        console.error('[SecretBlox] - Failed to execute preloading script:', error);
-    }
     ipcMain.on('closeApp', () => {
         win.close();
     });
@@ -182,7 +168,7 @@ ipcMain.handle('open-file', async (event) => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
         properties: ['openFile'],
         filters: [
-            { name: 'Lua Files', extensions: ['lua', 'luau'] },
+            { name: 'Script Files', extensions: ['lua', 'luau', 'txt'] },
             { name: 'All Files', extensions: ['*'] }
         ]
     });
@@ -201,14 +187,33 @@ ipcMain.handle('open-file', async (event) => {
     }
 });
 
-ipcMain.handle('inject', () => {
-    const isPackaged = require('electron-is-packaged').isPackaged;
-    const secretKey = "YOUR_SECRET_KEY";
-    if (isPackaged) {
-        spawn(path.join(app.getPath('exe'), '..', '..', '..', 'bin', 'SecretBloxInjector.exe'), [secretKey])
-    } else {
-        spawn(path.join(__dirname, 'bin', 'SecretBloxInjector.exe'), [secretKey])
-    }
+ipcMain.handle('inject', (event, secretKey) => {
+    const basePath = isPackaged
+        ? path.join(app.getPath('exe'), '..', '..', '..')
+        : __dirname;
+    const injectorPath = path.join(basePath, 'bin', 'SecretBloxInjector.exe');
+
+    spawn(injectorPath, [secretKey]);
+});
+
+ipcMain.handle('fetch-secret-key', () => {
+    const directoryPath = isPackaged ? path.dirname(app.getPath('exe')) : __dirname;
+    const secretKeyPath = path.join(directoryPath, 'secretKey.txt');
+
+    return fs.existsSync(secretKeyPath) ? fs.readFileSync(secretKeyPath, 'utf-8') : '';
+});
+
+ipcMain.handle('save-secret-key', (event, secretKey) => {
+    const directoryPath = isPackaged ? path.dirname(app.getPath('exe')) : __dirname;
+    const secretKeyPath = path.join(directoryPath, 'secretKey.txt');
+
+    fs.writeFileSync(secretKeyPath, secretKey, 'utf-8')
+})
+
+ipcMain.handle('go-main', async () => {
+    await win.loadFile('src/main/html/main.html');
+    win.setSize(900, 400);
+    win.center();
 })
 
 app.disableHardwareAcceleration(false);
