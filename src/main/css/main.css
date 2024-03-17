@@ -255,6 +255,11 @@ body {
     outline: none;
     border: 1px solid #28272c;
     border-radius: 6px;
+    cursor: pointer;
+}
+
+.injection:hover {
+    background-color: #15151a;
 }
 
 .injection img {

@@ -628,6 +628,12 @@ if (saveFileButton) {
     })
 }
 
+const injectButton = document.getElementById('Inject')
+if (injectButton) {
+    injectButton.addEventListener('click', async () => {
+         await ipcRenderer.invoke('inject');
+    })
+}
 
 document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'b') {

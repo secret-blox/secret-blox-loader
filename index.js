@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
 const createWindow = async () => {
     win = new BrowserWindow({
@@ -171,6 +172,10 @@ ipcMain.handle('save-file-dialog', async (event, fileContent) => {
 
     fs.writeFileSync(filePath, fileContent, 'utf-8');
     return { canceled: false }
+})
+
+ipcMain.handle('inject', () => {
+    spawn('C:\\Users\\Pixeluted\\Desktop\\secret-blox\\secret-blox-loader\\bin\\SecretBloxInjector.exe', [process.env.INJECTOR_KEY]);
 })
 
 async function recursiveSearch(dir, fileName) {
