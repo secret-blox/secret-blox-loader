@@ -621,6 +621,13 @@ if (openFileButton) {
     });
 }
 
+const saveFileButton = document.getElementById('SaveFile')
+if (saveFileButton) {
+    saveFileButton.addEventListener('click', async () => {
+        await ipcRenderer.invoke('save-file-dialog', EditorManager.activeTab.getValue());
+    })
+}
+
 
 document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'b') {

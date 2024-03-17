@@ -154,7 +154,24 @@ ipcMain.handle('open-file-dialog', async (event) => {
   
     const content = fs.readFileSync(filePaths[0], 'utf-8')
     return { canceled: false, content: content };
-  });
+});
+
+ipcMain.handle('save-file-dialog', async (event, fileContent) => {
+    const { canceled, filePath } = await dialog.showSaveDialog({
+        title: 'Save your script',
+        filters: [
+            { name: 'Scripts', extensions: ['lua', 'txt'] }
+        ],
+        properties: ['createDirectory']
+    })
+
+    if (canceled || !filePath) {
+        return { canceled: true }
+    }
+
+    fs.writeFileSync(filePath, fileContent, 'utf-8');
+    return { canceled: false }
+})
 
 async function recursiveSearch(dir, fileName) {
     const files = await fs.promises.readdir(dir, { withFileTypes: true })
