@@ -703,51 +703,69 @@ class Misc {
         return false;
     }
 
+    static updateRef(oldFileName, newFileName, editorInstance) {
+        console.log(oldFileName)
+        const editorData = EditorManager.editors[oldFileName];
+        if (!editorData) {
+            console.error(`[ERROR] Editor data not found for file: ${oldFileName}`);
+            return;
+        }
+        const tabText = editorData.tab.querySelector('span');
+        tabText.textContent = newFileName.length > 10 ? newFileName.substring(0, 10) + "..." : newFileName;
+    
+        EditorManager.editors[newFileName] = { ...editorData, editor: editorInstance };
+        delete EditorManager.editors[oldFileName];
+    
+        if (EditorManager.activeEditor === oldFileName) {
+            EditorManager.activeEditor = newFileName;
+        }
+    }
+
     static async saveFile() {
-        const fileName = EditorManager.activeEditor; 
+        let fileName = EditorManager.activeEditor; 
         if (!fileName) {
             console.error('[ERROR] No active editor found');
             return;
         }
-        const editorData = EditorManager.editors[fileName];
+        let editorData = EditorManager.editors[fileName];
         if (!editorData) {
             console.error('[ERROR] Editor data not found for file:', fileName);
             return;
         }
-
-        const { editor, tab, editorContainer } = editorData;
+    
+        const { editor, tab } = editorData;
         const contents = editor.getValue();
-
+    
         try {
             const response = await ipcRenderer.invoke('get-file', fileName);
-
+    
+            let saveResponse;
             if (response.success && response.exists) {
-                const saveResponse = await ipcRenderer.invoke('save-file', { filePath: response.filePath, contents });
-
+                saveResponse = await ipcRenderer.invoke('save-file', { filePath: response.filePath, contents });
+            } else {
+                saveResponse = await ipcRenderer.invoke('save-file', { filePath: `workspace/${fileName}`, contents });
                 if (saveResponse.success) {
-                    Notification.play('File Saved', `The following file: ${fileName} has been successfully saved to the disk.`);
-                    const closeIcon = tab.querySelector('.close-tab-button img');
-                    if (closeIcon) {
-                        closeIcon.setAttribute('src', '../assets/actions/remove.svg');
-                        const closeButton = closeIcon.parentNode;
-                        const clonedCloseButton = closeButton.cloneNode(true);
+                    const newFileName = path.basename(saveResponse.filePath);
+                    this.updateRef(fileName, newFileName, editor);
+                    fileName = newFileName;
+                }
+            }
+    
+            if (saveResponse.success) {
+                Notification.play('File Saved', `The file: ${fileName} has been successfully saved.`);
+                const closeIcon = tab.querySelector('.close-tab-button img');
+                if (closeIcon) {
+                    closeIcon.setAttribute('src', '../assets/actions/remove.svg');
+                    const closeButton = closeIcon.parentNode;
+                    const clonedCloseButton = closeButton.cloneNode(true);
 
-                        const clonedCloseIcon = clonedCloseButton.querySelector('img');
-                        clonedCloseIcon.setAttribute('src', '../assets/actions/remove.svg');
+                    const clonedCloseIcon = clonedCloseButton.querySelector('img');
+                    clonedCloseIcon.setAttribute('src', '../assets/actions/remove.svg');
 
-                        closeButton.parentNode.replaceChild(clonedCloseButton, closeButton);
-                    }
-                } else {
-                    console.error('[ERROR] Failed to save the file:', saveResponse.message);
+                    closeButton.parentNode.replaceChild(clonedCloseButton, closeButton);
                 }
             } else {
-                const saveResponse = await ipcRenderer.invoke('save-file', { filePath: `workspace/${fileName}`, contents });
-
-                if (saveResponse.success) {
-                    Notification.play('File Saved', `The following file: ${saveResponse.filePath} has been successfully saved to the disk.`);
-                } else {
-                    console.error('[ERROR] Failed to save the file:', saveResponse.message);
-                }
+                console.error('[ERROR] Failed to save the file:', saveResponse.message);
             }
         } catch (error) {
             console.error('[ERROR] Error saving the file:', error);
