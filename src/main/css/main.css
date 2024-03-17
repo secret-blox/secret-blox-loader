@@ -45,7 +45,7 @@ body {
     width: 600px;
     height: 40px;
     left: 25%;
-    /* -webkit-app-region: drag; */
+    -webkit-app-region: drag;
 }
 
 .top-left {
