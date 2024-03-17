@@ -26,7 +26,7 @@ const createWindow = async () => {
                 await win.loadFile('src/main/html/main.html');
                 win.setSize(900, 400);
                 
-                win.webContents.openDevTools()
+                // win.webContents.openDevTools()
                 
                 win.center();
             } catch (error) {
