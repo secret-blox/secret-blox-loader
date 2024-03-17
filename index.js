@@ -26,7 +26,8 @@ const createWindow = async () => {
             try {
                 await win.loadFile('src/main/html/main.html');
                 win.setSize(900, 400);
-                win.webContents.openDevTools()
+                // Literally just do CTRL + SHIFT + I bruh
+                //win.webContents.openDevTools()
                 win.center();
             } catch (error) {
                 console.error('[SecretBlox] - Failed to load main.html:', error);
