@@ -712,13 +712,6 @@ class Misc {
         }
         const tabText = editorData.tab.querySelector('span');
         tabText.textContent = newFileName.length > 10 ? newFileName.substring(0, 10) + "..." : newFileName;
-    
-        EditorManager.editors[newFileName] = { ...editorData, editor: editorInstance };
-        delete EditorManager.editors[oldFileName];
-    
-        if (EditorManager.activeEditor === oldFileName) {
-            EditorManager.activeEditor = newFileName;
-        }
     }
 
     static async saveFile() {
