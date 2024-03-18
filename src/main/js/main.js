@@ -518,6 +518,26 @@ class EditorManager {
         });
     }
 
+    static saveState() {
+        const tabsState = Object.keys(this.editors).map(file => {
+            const { editor } = this.editors[file];
+            return {
+                file,
+                contents: editor.getValue()
+            };
+        });
+    
+        const stateJSON = JSON.stringify(tabsState);
+        const savePath = path.join(__dirname, '../../../bin');
+        const saveFile = path.join(savePath, 'save.json');
+    
+        if (!fs.existsSync(savePath)) {
+            fs.mkdirSync(savePath, { recursive: true });
+        }
+
+        fs.writeFileSync(saveFile, stateJSON, 'utf8');
+    }
+
     static getActiveEditor() {
         return this.activeEditor;
     }
@@ -811,8 +831,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[ERROR] Attempting to load files:', err);
     });
 
-    EditorManager.createTab('Untitled-1', 'print("SecretBlox")');
-
     quickActions.addEventListener('click', function(e) {
         if (e.target.tagName === 'BUTTON') {
             const action = e.target.textContent;
@@ -835,6 +853,24 @@ document.addEventListener('DOMContentLoaded', () => {
             dots.style.backgroundColor = '#33333380';
         }
     });
+
+    try {
+        const tabsSavePath = path.join(__dirname, '../../../bin/save.json');
+        if (fs.existsSync(tabsSavePath)) {
+            const data = JSON.parse(fs.readFileSync(tabsSavePath, 'utf8'));
+
+            data.forEach(tab => {
+                EditorManager.createTab(tab.file, tab.contents);
+            });
+        } else {
+            EditorManager.createTab('Untitled-1', 'print("SecretBlox")');
+        }
+    } catch (err) {
+        console.error('[ERROR] Loading tabs state:', err);
+    }
+    setInterval(() => {
+        EditorManager.saveState();
+    }, 5000);
 });
 
 document.addEventListener('keydown', function(e) {
@@ -919,13 +955,7 @@ secretbloxSocket.on('connection', function connection(ws) {
   
 
 injectButton.addEventListener('click', async () => {
-    const secretKey = await ipcRenderer.invoke('fetch-secret-key');
-    if (secretKey == '') {
-        Notification.play('No secret key!', 'Please create file secretKey.txt and enter your key there!');
-        return;
-    }
-
-    await ipcRenderer.invoke('inject', secretKey);
+    await ipcRenderer.invoke('inject');
 })
 
 document.addEventListener('keydown', function(event) {
