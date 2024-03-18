@@ -955,7 +955,8 @@ secretbloxSocket.on('connection', function connection(ws) {
   
 
 injectButton.addEventListener('click', async () => {
-    await ipcRenderer.invoke('inject');
+    const secretKey = await ipcRenderer.invoke('fetch-secret-key');
+    await ipcRenderer.invoke('inject', secretKey);
 })
 
 document.addEventListener('keydown', function(event) {
